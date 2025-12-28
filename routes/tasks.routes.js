@@ -8,21 +8,20 @@ import {
   getTasksByPriority
 } from '../services/tasks.services.js'
 
-import { 
+import {
   validateCreateTask,
-   validateUpdateTask
- } from '../middlewares/tasks.middleware.js'
+  validateUpdateTask
+} from '../middlewares/tasks.middleware.js'
 
-import { 
-    allowedPriorities 
+import {
+  allowedPriorities
 } from '../constants/tasks.constants.js'
 
 const router = express.Router()
 
 // GET /tasks?completed=true&sortByDate=true
 router.get('/', (req, res) => {
-//   res.json(getAllTasks())
-const { completed, sortByDate } = req.query
+  const { completed, sortByDate } = req.query
 
   const tasks = getAllTasks({
     completed: completed !== undefined ? completed === 'true' : undefined,
@@ -55,7 +54,7 @@ router.get('/priority/:level', (req, res) => {
   res.json(getTasksByPriority(level))
 })
 
-router.post('', validateCreateTask, (req, res) => {
+router.post('/', validateCreateTask, (req, res) => {
   const { title, description, completed, priority } = req.body
 
   if (!title || !description || typeof completed !== 'boolean' || !priority) {
@@ -69,7 +68,13 @@ router.post('', validateCreateTask, (req, res) => {
 })
 
 router.put('/:id', validateUpdateTask, (req, res) => {
-  const updatedTask = updateTask(Number(req.params.id), req.body)
+  const id = Number(req.params.id)
+
+  if (isNaN(id)) {
+    return res.status(400).json({ message: 'id must be a number' })
+  }
+
+  const updatedTask = updateTask(id, req.body)
 
   if (!updatedTask) {
     return res.status(404).json({ message: 'Task not found' })
@@ -79,7 +84,12 @@ router.put('/:id', validateUpdateTask, (req, res) => {
 })
 
 router.delete('/:id', (req, res) => {
-  const isDeleted = deleteTask(Number(req.params.id))
+  const id = Number(req.params.id)
+
+  if (isNaN(id)) {
+    return res.status(400).json({ message: 'id must be a number' })
+  }
+  const isDeleted = deleteTask(req.params.id)
 
   if (!isDeleted) {
     return res.status(404).json({ message: 'Task not found' })

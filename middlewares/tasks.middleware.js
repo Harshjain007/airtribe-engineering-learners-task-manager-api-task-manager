@@ -1,10 +1,10 @@
-import { 
+import {
   allowedPriorities
 } from "../constants/tasks.constants.js"
 
 // This is a middleware to validate task data in post requests
 export const validateCreateTask = (req, res, next) => {
-  const { title, description, completed, priority } = req.body
+  const { title = '', description = '', completed = null, priority = null } = req.body
 
   // Validate title
   if (!title || typeof title !== 'string' || title.trim() === '') {
@@ -25,7 +25,7 @@ export const validateCreateTask = (req, res, next) => {
     })
   }
 
-  if(!allowedPriorities.includes(priority)) {
+  if (!allowedPriorities.includes(priority)) {
     return res.status(400).json({
       message: `Priority must be one of the following values: ${allowedPriorities.join(', ')}`
     })
@@ -36,7 +36,7 @@ export const validateCreateTask = (req, res, next) => {
 
 // This is a middleware to validate task data in put requests
 export const validateUpdateTask = (req, res, next) => {
-  const { title, description, completed, priority } = req.body
+  const { title = '', description = '', completed = null, priority = null } = req.body
 
   // Validate title if provided
   if (title !== undefined) {
@@ -61,7 +61,7 @@ export const validateUpdateTask = (req, res, next) => {
     })
   }
   // Validate priority if provided
-  if(priority !== undefined && !allowedPriorities.includes(priority)) {
+  if (priority !== undefined && !allowedPriorities.includes(priority)) {
     return res.status(400).json({
       message: `Priority must be one of the following values: ${allowedPriorities.join(', ')}`
     })

@@ -1,17 +1,18 @@
 import express from 'express'
 import taskRoutes from './routes/tasks.routes.js'
+import  errorHandler  from './middlewares/error.handler.js';
 
 const app = express();
-const port = 3001;
+const port = 3000;
 
 app.use(express.json());
+
 app.use(express.urlencoded({ extended: true }));
-app.use('/', (req, res, next) => {
-    console.log(`${req.method} ${req.url}`);
-    next();
-});
 
 app.use('/tasks', taskRoutes)
+
+// Error handling middleware
+app.use(errorHandler)
 
 app.listen(port, (err) => {
     if (err) {

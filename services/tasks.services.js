@@ -7,63 +7,63 @@ let nextId = 1
 export const getAllTasks = ({ completed, sortByDate }) => {
     let result = [...tasks]
 
-  // Filtering: Filter by completed
-  if (completed !== undefined) {
-    result = result.filter(task => task.completed === completed)
-  }
+    // Filtering: Filter by completed
+    if (completed !== undefined) {
+        result = result.filter(task => task.completed === completed)
+    }
 
-  // Sorting: Sort by creation date
-  if (sortByDate) {
-    result.sort((a, b) => new Date(a.createdAt) - new Date(b.createdAt))
-  }
-  return result
+    // Sorting: Sort by creation date
+    if (sortByDate) {
+        result.sort((a, b) => new Date(a.createdAt) - new Date(b.createdAt))
+    }
+    return result
 }
 
 // GET /tasks/:id: Retrieve a specific task by its ID
 export const getTaskById = (id) => {
-  return tasks.find(task => task.id === id)
+    return tasks.find(task => task.id === id)
 }
 
 // GET /tasks/priority/:priority: Retrieve tasks by priority
 export const getTasksByPriority = (priority) => {
-  return tasks.filter(task => task.priority === priority)
+    return tasks.filter(task => task.priority === priority)
 }
 
 // POST /tasks: Create a new task with the required fields (title, description, completed)
-export const createTask = ({ title, description, completed, priority }) => {
-  const newTask = {
-      id: nextId++,
-      title,
-      description,
-      completed,
-      priority,
-      createdAt: new Date().toISOString()
+export const createTask = ({ title, description, completed=false, priority }) => {
+    const newTask = {
+        id: nextId++,
+        title,
+        description,
+        completed,
+        priority,
+        createdAt: new Date().toISOString()
     }
 
-  tasks.push(newTask)
-  return newTask
+    tasks.push(newTask)
+    return newTask
 }
 
 // PUT /tasks/:id: Update an existing task by its ID
 export const updateTask = (id, updatedData) => {
-  const taskIndex = tasks.findIndex(task => task.id === id)
+    const taskIndex = tasks.findIndex(task => task.id === id)
 
-  if (taskIndex === -1) return null
+    if (taskIndex === -1) return null
 
-  tasks[taskIndex] = {
-    ...tasks[taskIndex],
-    ...updatedData
-  }
+    tasks[taskIndex] = {
+        ...tasks[taskIndex],
+        ...updatedData
+    }
 
-  return tasks[taskIndex]
+    return tasks[taskIndex]
 }
 
 // DELETE /tasks/:id: Delete a task by its ID
 export const deleteTask = (id) => {
-  const taskIndex = tasks.findIndex(task => task.id === id)
+    const taskIndex = tasks.findIndex(task => task.id === id)
 
-  if (taskIndex === -1) return false
+    if (taskIndex === -1) return false
 
-  tasks.splice(taskIndex, 1)
-  return true
+    tasks.splice(taskIndex, 1)
+    return true
 }

@@ -1,7 +1,20 @@
-export const errorHandler = (err, req, res, next) => {
-  console.error(err)
+const handleError = (err, statusCode = 500, message = 'Internal Server Error') => {
+  const errorResponse = {
+    statusCode,
+    message
+  };
 
-  res.status(err.statusCode || 500).json({
-    message: err.message || 'Internal Server Error'
-  })
-}
+  if (process.env.NODE_ENV === 'development') {
+    errorResponse.type = err.constructor.name;
+    errorResponse.stack = err.stack;
+  }
+
+  return errorResponse;
+};
+
+const errorHandler = (err, req, res, next) => {
+  const errorResponse = handleError(err, err.statusCode, err.message);
+  res.status(errorResponse.statusCode).json(errorResponse);
+};
+
+export default errorHandler;
